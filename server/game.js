@@ -1,3 +1,5 @@
+var Playaz = require("./playaz.js");
+
 var Field = function () {
 
     this.STATUS_CLOSED = 1;
@@ -18,6 +20,16 @@ var Game = function () {
     this.size = 10;
     this.mines = 20;
     this.fields = [];
+    this.playaz = new Playaz(this);
+    this.action = new Action(this);
+
+    this.getValues = function(){
+      return {
+        size: this.size,
+        mines: this.mines,
+        fields: this.fields
+      }
+    }
 
     this.generateFields = function () {
         this.fields = [];
@@ -78,6 +90,10 @@ var Game = function () {
 var Action = function (game) {
     this.game = game;
 
+    this.playaJoin = function(name, socket){
+      this.game.playaz.addPlaya(name, socket);
+    }
+
     this.clickField = function (plainField, rightClick) {
         var field = this.game.fields[plainField.x] && this.game.fields[plainField.x][plainField.y];
         if (!field) {
@@ -115,4 +131,3 @@ var Action = function (game) {
 
 module.exports.Field = Field;
 module.exports.Game = Game;
-module.exports.Action = Action;

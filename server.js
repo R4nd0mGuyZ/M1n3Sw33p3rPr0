@@ -29,16 +29,7 @@ io.on("connection", function (socket) {
 
     socket.on("join", function () {
         console.log("join");
-        socket.emit("game", {game: currentGame});
+        socket.emit("game", {game: currentGame.getValues()});
+        currentGame.action.playaJoin("", socket);
     });
-
-    socket.on("clickField", function (data) {
-        console.log("clickField");
-        var action = new game.Action(currentGame);
-        var field = action.clickField(data.field, data.rightClick);
-        if (field) {
-            io.sockets.emit("field", {field: field});
-        }
-    });
-
 });
