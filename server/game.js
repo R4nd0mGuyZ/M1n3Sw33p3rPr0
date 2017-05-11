@@ -29,7 +29,7 @@ var Game = function () {
         mines: this.mines,
         fields: this.fields
       }
-    }
+    };
 
     this.generateFields = function () {
         this.fields = [];
@@ -92,7 +92,7 @@ var Action = function (game) {
 
     this.playaJoin = function(name, socket){
       this.game.playaz.addPlaya(name, socket);
-    }
+    };
 
     this.clickField = function (plainField, rightClick) {
         var field = this.game.fields[plainField.x] && this.game.fields[plainField.x][plainField.y];
@@ -101,13 +101,13 @@ var Action = function (game) {
         }
         if (field.status === field.STATUS_CLOSED) {
             if (rightClick) {
-                return this.flagField(field)
+                return this.flagField(field);
             } else {
-                return this.openField(field)
+                return this.openField(field);
             }
         } else if (field.status === field.STATUS_FLAGGED) {
             if (rightClick) {
-                return this.flagField(field)
+                return this.flagField(field);
             }
         }
         return false;
