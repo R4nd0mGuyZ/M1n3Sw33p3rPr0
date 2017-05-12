@@ -114,10 +114,9 @@ var Action = function (game) {
     };
 
     this.openField = function (field) {
-        if (field.isMine) {
-            return false;
+        if (!field.isMine) {
+        	game.calculateNeighbours(field);
         }
-        game.calculateNeighbours(field);
         field.status = field.STATUS_OPEN;
         return field;
     };
