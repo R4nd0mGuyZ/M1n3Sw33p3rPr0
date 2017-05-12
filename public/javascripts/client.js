@@ -3,6 +3,7 @@
     var Board = function (game) {
         this.game = game;
         this.canvas = document.getElementById("canvas");
+        this.bombIcon = document.getElementById("bombicon");
         this.context = this.canvas.getContext("2d");
 
         this.fieldSize = 50;
@@ -20,21 +21,21 @@
             } else if (field.status === 2) {
                 this.context.fillStyle = "orange";
             } else if (field.status === 3) {
-                if (field.isMine) {
-                    this.context.fillStyle = "red";
-                } else {
-                    this.context.fillStyle = "white";
-                }
+                this.context.fillStyle = "white";
             }
             this.context.fillRect(field.x * this.fieldSize + 1, field.y * this.fieldSize + 1, this.fieldSize - 2, this.fieldSize - 2);
-
-            if (field.status === 3 && !field.isMine && field.neighbours) {
+            
+            if(field.status === 3 && field.isMine){
+            	this.context.drawImage(this.bombIcon,field.x * this.fieldSize + 1, field.y * this.fieldSize + 1, this.fieldSize - 2, this.fieldSize - 2);
+            }
+            
+            if (field.status === 3 && field.neighbours) {
                 this.context.fillStyle = "black";
                 this.context.font = "30px Arial";
                 this.context.fillText(field.neighbours, field.x * this.fieldSize + 16.5, field.y * this.fieldSize + 35);
             }
         };
-
+        
         for (var x = 0; x < this.game.size; x++) {
             for (var y = 0; y < this.game.size; y++) {
                 this.renderField(this.game.fields[x][y]);
