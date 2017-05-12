@@ -2,8 +2,8 @@
 module.exports = function Action (game) {
   this.game = game;
 
-  this.playaJoin = function (name, socket) {
-    this.game.playaz.addPlaya(name, socket);
+  this.playerJoin = function (name, socket) {
+    this.game.players.addPlayer(name, socket);
   };
 
   this.clickField = function (plainField, rightClick) {

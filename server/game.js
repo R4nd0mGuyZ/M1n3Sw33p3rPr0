@@ -1,5 +1,5 @@
 'use strict';
-var Playaz = require('./Players.js'),
+var Players = require('./Players.js'),
   Action = require('./Action.js'),
   Field = require('./Field.js');
 
@@ -7,7 +7,7 @@ module.exports.Game = function () {
   this.size = 10;
   this.mines = 20;
   this.fields = [];
-  this.playaz = new Playaz(this);
+  this.players = new Players(this);
   this.action = new Action(this);
 
   this.getValues = function () {
