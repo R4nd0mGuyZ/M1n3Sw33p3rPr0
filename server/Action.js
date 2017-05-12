@@ -27,7 +27,10 @@ module.exports = function Action (game) {
 
   this.openField = function (field) {
     if (!field.isMine) {
-        	game.calculateNeighbours(field);
+      this.game.calculateNeighbours(field);
+      if (!this.game.openField()) {
+        return false;
+      }
     }
     field.status = field.STATUS_OPEN;
     return field;

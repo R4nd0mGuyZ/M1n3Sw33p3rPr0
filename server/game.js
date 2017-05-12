@@ -3,10 +3,11 @@ var PlayerList = require('./PlayerList.js'),
   Action = require('./Action.js'),
   Field = require('./Field.js');
 
-module.exports.Game = function () {
+module.exports = function Game () {
   this.size = 10;
   this.mines = 20;
   this.fields = [];
+  this.openedFields = 0;
   this.playerList = new PlayerList(this);
   this.action = new Action(this);
 
@@ -14,7 +15,11 @@ module.exports.Game = function () {
     return {
       size: this.size,
       mines: this.mines,
-      fields: this.fields
+      fields: this.fields.map(function (fields) {
+        return fields.map(function (field) {
+          return field.getValues();
+        });
+      })
     };
   };
 
@@ -67,8 +72,19 @@ module.exports.Game = function () {
     return neighbours;
   };
 
+  this.openField = function () {
+    this.openedFields++;
+    if (this.openedFields >= this.size * this.size - this.mines) {
+      this.initialize();
+      this.playerList.tellAllPlayers('game', {game: this.getValues(), playerList: this.playerList.getValues()});
+      return false;
+    }
+    return true;
+  };
+
   this.initialize = function () {
     this.generateFields();
     this.generateMines();
+    this.openedFields = 0;
   };
 };

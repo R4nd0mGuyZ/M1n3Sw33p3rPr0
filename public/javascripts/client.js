@@ -1,19 +1,11 @@
 (function () {
   // Board
   var Board = function (game) {
-    this.game = game;
     this.canvas = document.getElementById('canvas');
     this.bombIcon = document.getElementById('bombicon');
     this.context = this.canvas.getContext('2d');
 
     this.fieldSize = 50;
-
-    var size = this.fieldSize * this.game.size;
-    this.canvas.setAttribute('width', size);
-    this.canvas.setAttribute('height', size);
-
-    this.context.fillStyle = 'black';
-    this.context.fillRect(0, 0, size, size);
 
     this.renderField = function (field) {
       if (field.status === 1) {
@@ -36,11 +28,25 @@
       }
     };
 
-    for (var x = 0; x < this.game.size; x++) {
-      for (var y = 0; y < this.game.size; y++) {
-        this.renderField(this.game.fields[x][y]);
+    this.setGame = function (game) {
+      this.game = game;
+
+      var size = this.fieldSize * this.game.size;
+      this.canvas.setAttribute('width', size);
+      this.canvas.setAttribute('height', size);
+
+      this.context.fillStyle = 'black';
+      this.context.fillRect(0, 0, size, size);
+
+      for (var x = 0; x < this.game.size; x++) {
+        for (var y = 0; y < this.game.size; y++) {
+          this.renderField(this.game.fields[x][y]);
+        }
       }
-    }
+
+      return this;
+    };
+    this.setGame(game);
   };
 
   // Controller
@@ -93,30 +99,33 @@
     this.tableHead = this.table.tHead;
 
     this.addPlayer = function (playerData) {
-      var row = document.createElement('tr');
-      row.id = 'scoreTableRow' + playerData.id;
+      var row = document.getElementById('scoreTableRow' + playerData.id);
+      if (!row) {
+        row = document.createElement('tr');
+        row.id = 'scoreTableRow' + playerData.id;
+        this.table.append(row);
 
-      if (!this.tableHead.childElementCount) {
-        for (attribute in playerData) {
-          var headColumn = document.createElement('td');
-          headColumn.innerText = attribute;
-          this.tableHead.append(headColumn);
+        if (!this.tableHead.childElementCount) {
+          for (attribute in playerData) {
+            var headColumn = document.createElement('td');
+            headColumn.innerText = attribute;
+            this.tableHead.append(headColumn);
+          }
         }
       }
 
-      for (attribute in playerData) {
-        var column = document.createElement('td');
-        column.id = 'scoreTableColumn' + playerData.id + attribute;
-        column.innerText = playerData[attribute];
-        row.append(column);
-      }
-
-      this.table.append(row);
+      this.updatePlayer(playerData);
     };
 
     this.updatePlayer = function (playerData) {
       for (attribute in playerData) {
         var column = document.getElementById('scoreTableColumn' + playerData.id + attribute);
+        if (!column) {
+          var column = document.createElement('td');
+          column.id = 'scoreTableColumn' + playerData.id + attribute;
+          var row = document.getElementById('scoreTableRow' + playerData.id);
+          row.append(column);
+        }
         column.innerText = playerData[attribute];
       }
     };
@@ -139,9 +148,9 @@
   socket.on('game', function (data) {
     console.log('game');
 
-    board = new Board(data.game);
-    scoreTable = new ScoreTable();
-    controller = new Controller(board, scoreTable, socket);
+    board = board && board.setGame(data.game) || new Board(data.game);
+    scoreTable = scoreTable || new ScoreTable();
+    controller = controller || new Controller(board, scoreTable, socket);
 
     data.playerList.players.forEach(function (playerData) {
       scoreTable.addPlayer(playerData);

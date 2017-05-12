@@ -25,12 +25,12 @@ module.exports = function PlayerList (game) {
     socket.emit('game', {game: this.game.getValues(), playerList: this.getValues()});
 
     socket.on('disconnect', function () {
-      this.tellAllPlayerList('PlayerLeft', {id: id});
+      this.tellAllPlayers('PlayerLeft', {id: id});
       this.removePlayer(id);
     }.bind(this));
     var player = new Player(name, id, socket, this.game);
     this.players.push(player);
-    this.tellAllPlayerList('PlayerJoined', {player: player.getValues()});
+    this.tellAllPlayers('PlayerJoined', {player: player.getValues()});
   };
 
   this.removePlayer = function (id) {
@@ -51,7 +51,7 @@ module.exports = function PlayerList (game) {
     return null;
   };
 
-  this.tellAllPlayerList = function (eventName, data) {
+  this.tellAllPlayers = function (eventName, data) {
     for (var i = 0; i < this.players.length; i++) {
       this.players[i].socket.emit(eventName, data);
     }

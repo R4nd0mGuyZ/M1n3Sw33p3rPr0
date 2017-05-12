@@ -11,4 +11,15 @@ module.exports = function Field () {
   this.neighbours = null;
 
   this.status = null;
+
+  this.getValues = function () {
+    var isMine = (this.status === this.STATUS_OPEN ? this.isMine : null);
+    return {
+      x: this.x,
+      y: this.y,
+      isMine: isMine,
+      neighbours: this.neighbours,
+      status: this.status
+    };
+  };
 };

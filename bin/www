@@ -35,8 +35,8 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
-var game = require('../server/game.js');
-var currentGame = new game.Game();
+var Game = require('../server/Game.js');
+var currentGame = new Game();
 currentGame.initialize();
 
 /**
