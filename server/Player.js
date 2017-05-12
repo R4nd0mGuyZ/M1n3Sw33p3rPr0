@@ -19,7 +19,7 @@ module.exports = function Player (name, id, socket, game) {
         }
       }
       console.log(this.name + ' has now ' + this.fame + ' fame and ' + this.wackness + ' wackness.');
-      this.game.players.tellAllPlayers('field', {field: field});
+      this.game.playerList.tellAllPlayerList('field', {field: field, player: this.getValues()});
     }
   }.bind(this));
 

@@ -3,6 +3,11 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-a {
-  color: #00B7FF;
+#canvas {
+  display: inline-block;
+}
+
+#scoretable {
+  display: inline-block;
+  vertical-align: top;
 }

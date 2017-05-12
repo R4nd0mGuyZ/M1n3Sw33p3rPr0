@@ -45,7 +45,6 @@ currentGame.initialize();
 io.on('connection', function (socket) {
   socket.on('join', function () {
     console.log('join');
-    socket.emit('game', {game: currentGame.getValues()});
     currentGame.action.playerJoin('', socket);
   });
 });

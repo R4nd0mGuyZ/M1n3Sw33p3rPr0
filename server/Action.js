@@ -3,11 +3,11 @@ module.exports = function Action (game) {
   this.game = game;
 
   this.playerJoin = function (name, socket) {
-    this.game.players.addPlayer(name, socket);
+    this.game.playerList.addPlayer(name, socket);
   };
 
-  this.clickField = function (plainField, rightClick) {
-    var field = this.game.fields[plainField.x] && this.game.fields[plainField.x][plainField.y];
+  this.clickField = function (fieldData, rightClick) {
+    var field = this.game.fields[fieldData.x] && this.game.fields[fieldData.x][fieldData.y];
     if (!field) {
       return false;
     }
