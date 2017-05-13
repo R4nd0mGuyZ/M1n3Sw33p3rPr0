@@ -7,22 +7,26 @@
 
     this.fieldSize = 50;
 
+    var StatusColor = {1: 'lightgrey' , 2: 'orange' , 3: 'white'}
+    this.FIELD_STATUS_CLOSED = 1;
+    this.FIELD_STATUS_FLAGGED = 2;
+    this.FIELD_STATUS_OPEN = 3;
+
+    var NeighbourColors = {1: 'blue', 2: 'green', 3: 'red', 4: 'darkblue', 5: 'brown', 6: 'cyan', 7: 'black', 8: 'grey' };
+
     this.renderField = function (field) {
-      if (field.status === 1) {
-        this.context.fillStyle = 'lightgrey';
-      } else if (field.status === 2) {
-        this.context.fillStyle = 'orange';
-      } else if (field.status === 3) {
-        this.context.fillStyle = 'white';
-      }
+
+        this.context.fillStyle = StatusColor[field.status];
+
       this.context.fillRect(field.x * this.fieldSize + 1, field.y * this.fieldSize + 1, this.fieldSize - 2, this.fieldSize - 2);
 
-      if (field.status === 3 && field.isMine) {
+      if (field.status === this.FIELD_STATUS_OPEN && field.isMine) {
             	this.context.drawImage(this.bombIcon, field.x * this.fieldSize + 1, field.y * this.fieldSize + 1, this.fieldSize - 2, this.fieldSize - 2);
       }
 
-      if (field.status === 3 && field.neighbours) {
-        this.context.fillStyle = 'black';
+      if (field.status === this.FIELD_STATUS_OPEN && field.neighbours) {
+
+        this.context.fillStyle = NeighbourColors[field.neighbours];
         this.context.font = '30px Arial';
         this.context.fillText(field.neighbours, field.x * this.fieldSize + 16.5, field.y * this.fieldSize + 35);
       }
