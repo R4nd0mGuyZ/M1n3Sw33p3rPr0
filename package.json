@@ -1,7 +1,17 @@
 {
   "name": "m1n3sw33p3rpr0",
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "description": "M1n3Sw33p3r Pr0",
   "private": true,
+  "author": "R4nd0mGuyZ",
+  "homepage": "https://github.com/R4nd0mGuyZ/M1n3Sw33p3rPr0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/R4nd0mGuyZ/M1n3Sw33p3rPr0.git"
+  },
+  "bugs": {
+    "url": "https://github.com/R4nd0mGuyZ/M1n3Sw33p3rPr0/issues"
+  },
   "scripts": {
     "start": "node ./bin/www"
   },
@@ -14,5 +24,6 @@
     "pug": "~2.0.0-beta11",
     "serve-favicon": "~2.4.2",
     "socket.io": "^2.0.1"
-  }
+  },
+  "devDependencies": {}
 }
