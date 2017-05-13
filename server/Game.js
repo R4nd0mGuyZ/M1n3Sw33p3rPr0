@@ -76,7 +76,7 @@ module.exports = function Game () {
     this.openedFields++;
     if (this.openedFields >= this.size * this.size - this.mines) {
       this.initialize();
-      this.playerList.tellAllPlayers('game', {game: this.getValues(), playerList: this.playerList.getValues()});
+      this.playerList.tellAllPlayers('nextGame', {game: this.getValues(), playerList: this.playerList.getValues()});
       return false;
     }
     return true;

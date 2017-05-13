@@ -11,3 +11,8 @@ body {
   display: inline-block;
   vertical-align: top;
 }
+
+.ownPlayerRow {
+  color: blue;
+  background-color: green;
+}

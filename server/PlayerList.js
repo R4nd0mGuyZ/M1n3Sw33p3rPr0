@@ -22,14 +22,13 @@ module.exports = function PlayerList (game) {
       name = 'Player#' + id;
     }
 
-    socket.emit('game', {game: this.game.getValues(), playerList: this.getValues()});
-
     socket.on('disconnect', function () {
       this.tellAllPlayers('PlayerLeft', {id: id});
       this.removePlayer(id);
     }.bind(this));
     var player = new Player(name, id, socket, this.game);
     this.players.push(player);
+    socket.emit('game', {game: this.game.getValues(), playerList: this.getValues(), player: player.getValues()});
     this.tellAllPlayers('PlayerJoined', {player: player.getValues()});
   };
 

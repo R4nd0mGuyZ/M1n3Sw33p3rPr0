@@ -7,16 +7,15 @@
 
     this.fieldSize = 50;
 
-    var StatusColor = {1: 'lightgrey' , 2: 'orange' , 3: 'white'}
+    var NeighbourColors = {1: 'blue', 2: 'green', 3: 'red', 4: 'darkblue', 5: 'brown', 6: 'cyan', 7: 'black', 8: 'grey' };
+
+    var StatusColor = {1: 'lightgrey', 2: 'orange', 3: 'white'};
     this.FIELD_STATUS_CLOSED = 1;
     this.FIELD_STATUS_FLAGGED = 2;
     this.FIELD_STATUS_OPEN = 3;
 
-    var NeighbourColors = {1: 'blue', 2: 'green', 3: 'red', 4: 'darkblue', 5: 'brown', 6: 'cyan', 7: 'black', 8: 'grey' };
-
     this.renderField = function (field) {
-
-        this.context.fillStyle = StatusColor[field.status];
+      this.context.fillStyle = StatusColor[field.status];
 
       this.context.fillRect(field.x * this.fieldSize + 1, field.y * this.fieldSize + 1, this.fieldSize - 2, this.fieldSize - 2);
 
@@ -25,7 +24,6 @@
       }
 
       if (field.status === this.FIELD_STATUS_OPEN && field.neighbours) {
-
         this.context.fillStyle = NeighbourColors[field.neighbours];
         this.context.font = '30px Arial';
         this.context.fillText(field.neighbours, field.x * this.fieldSize + 16.5, field.y * this.fieldSize + 35);
@@ -98,7 +96,8 @@
   };
 
   // ScoreTable
-  var ScoreTable = function () {
+  var ScoreTable = function (ownPlayerId) {
+    this.ownPlayerId = ownPlayerId;
     this.table = document.getElementById('scoretable');
     this.tableHead = this.table.tHead;
 
@@ -107,6 +106,9 @@
       if (!row) {
         row = document.createElement('tr');
         row.id = 'scoreTableRow' + playerData.id;
+        if (playerData.id === this.ownPlayerId) {
+          row.setAttribute('class', 'ownPlayerRow');
+        }
         this.table.appendChild(row);
 
         if (!this.tableHead.childElementCount) {
@@ -143,7 +145,8 @@
   // game
   var board,
     controller,
-    scoreTable;
+    scoreTable,
+    ownPlayerId;
 
   var socket = io('/');
 
@@ -152,10 +155,20 @@
   socket.on('game', function (data) {
     console.log('game');
 
-    board = board && board.setGame(data.game) || new Board(data.game);
-    scoreTable = scoreTable || new ScoreTable();
-    controller = controller || new Controller(board, scoreTable, socket);
+    ownPlayerId = data.player.id;
+    board = new Board(data.game);
+    scoreTable = new ScoreTable(ownPlayerId);
+    controller = new Controller(board, scoreTable, socket);
 
+    data.playerList.players.forEach(function (playerData) {
+      scoreTable.addPlayer(playerData);
+    });
+  });
+
+  socket.on('nextGame', function (data) {
+    console.log('nextGame');
+
+    board.setGame(data.game);
     data.playerList.players.forEach(function (playerData) {
       scoreTable.addPlayer(playerData);
     });
