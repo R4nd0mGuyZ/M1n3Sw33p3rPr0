@@ -103,13 +103,13 @@
       if (!row) {
         row = document.createElement('tr');
         row.id = 'scoreTableRow' + playerData.id;
-        this.table.append(row);
+        this.table.appendChild(row);
 
         if (!this.tableHead.childElementCount) {
           for (attribute in playerData) {
             var headColumn = document.createElement('td');
             headColumn.innerText = attribute;
-            this.tableHead.append(headColumn);
+            this.tableHead.appendChild(headColumn);
           }
         }
       }
@@ -124,7 +124,7 @@
           var column = document.createElement('td');
           column.id = 'scoreTableColumn' + playerData.id + attribute;
           var row = document.getElementById('scoreTableRow' + playerData.id);
-          row.append(column);
+          row.appendChild(column);
         }
         column.innerText = playerData[attribute];
       }
