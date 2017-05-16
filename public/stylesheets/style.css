@@ -1,6 +1,7 @@
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  color: rgb(60,60,60);
 }
 
 #canvas {
@@ -10,9 +11,25 @@ body {
 #scoretable {
   display: inline-block;
   vertical-align: top;
+  border-collapse: collapse;
+  margin: 10px;
 }
 
 .ownPlayerRow {
-  color: blue;
-  background-color: green;
+  border: 1px solid rgb(60,60,60);
+  font-weight: bold;
+}
+
+#scoretable thead td{
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+#scoretable tr:nth-child(even){
+  background-color: rgb(220,220,220);
+}
+
+#scoretable td{
+  line-height: 22px;
+  padding: 5px 10px;
 }
