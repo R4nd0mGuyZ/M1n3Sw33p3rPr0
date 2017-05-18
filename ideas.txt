@@ -1,5 +1,4 @@
 - Bug: The last fame isn't awarded when game restarts
-- Allow double-click to open all surrounding fields
 - Calculate score based on fame & wackness
 - Let players take turns (possibly a time-interval) instead of free-for-all
 - Let players choose their name before joining the game

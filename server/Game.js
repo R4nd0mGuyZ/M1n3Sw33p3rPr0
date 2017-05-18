@@ -11,20 +11,37 @@ module.exports = function Game () {
     this.playerList.addPlayer(name, socket);
   };
 
-  this.clickField = function (fieldData, rightClick) {
+  this.clickField = function (fieldData, rightClick, doubleClick) {
     var field = this.board.fields[fieldData.x] && this.board.fields[fieldData.x][fieldData.y];
+
     if (!field) {
       return false;
     }
     if (field.status === field.STATUS_CLOSED) {
       if (rightClick) {
-        return this.flagField(field);
+        return [this.flagField(field)];
       } else {
-        return this.openField(field);
+        return [this.openField(field)];
       }
     } else if (field.status === field.STATUS_FLAGGED) {
       if (rightClick) {
-        return this.flagField(field);
+        return [this.flagField(field)];
+      }
+    } else if (doubleClick && field.status === field.STATUS_OPEN) {
+      var fields = [];
+      var flagNum = 0;
+      this.board.forEachNeighbour(field, function (neighbour) {
+        if (neighbour.status === neighbour.STATUS_FLAGGED || neighbour.status === neighbour.STATUS_OPEN && neighbour.isMine) {
+          flagNum++;
+        } else if (neighbour.status === neighbour.STATUS_CLOSED) {
+          fields.push(neighbour);
+        }
+      });
+      if (flagNum === this.board.calculateNeighbours(field)) {
+        fields.forEach(function (field) {
+          this.openField(field);
+        }.bind(this));
+        return fields;
       }
     }
     return false;

@@ -9,18 +9,23 @@ module.exports = function Player (name, id, socket, game) {
 
   this.socket.on('clickField', function (data) {
     console.log(this.name + ' clickedField');
-    var field = this.game.clickField(data.field, data.rightClick);
-    if (field) {
-      if (field.status === field.STATUS_OPEN) {
-        if (field.isMine) {
-          this.wackness ++;
-        } else {
-          this.fame ++;
+    var fields = this.game.clickField(data.field, data.rightClick, data.doubleClick);
+    if (!fields) {
+      return;
+    }
+    fields.forEach(function (field) {
+      if (field) {
+        if (field.status === field.STATUS_OPEN) {
+          if (field.isMine) {
+            this.wackness ++;
+          } else {
+            this.fame ++;
+          }
         }
       }
-      console.log(this.name + ' has now ' + this.fame + ' fame and ' + this.wackness + ' wackness.');
-      this.game.playerList.tellAllPlayers('field', {field: field, player: this.getValues()});
-    }
+    }.bind(this));
+    console.log(this.name + ' has now ' + this.fame + ' fame and ' + this.wackness + ' wackness.');
+    this.game.playerList.tellAllPlayers('fields', {fields: fields, player: this.getValues()});
   }.bind(this));
 
   this.getValues = function () {

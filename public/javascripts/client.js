@@ -58,18 +58,16 @@
     this.socket = socket;
 
     this.board.canvas.addEventListener('click', function (event) {
-      var x = Math.floor(event.offsetX / this.board.fieldSize);
-      var y = Math.floor(event.offsetY / this.board.fieldSize);
-      var field = this.board.game.fields[x] && this.board.game.fields[x][y];
+      console.log('click');
+      var field = this.calculateField(event.offsetX, event.offsetY);
       if (field) {
         this.clickField(field, false);
       }
     }.bind(this));
 
     this.board.canvas.addEventListener('contextmenu', function (event) {
-      var x = Math.floor(event.offsetX / this.board.fieldSize);
-      var y = Math.floor(event.offsetY / this.board.fieldSize);
-      var field = this.board.game.fields[x] && this.board.game.fields[x][y];
+      console.log('contextmenu');
+      var field = this.calculateField(event.offsetX, event.offsetY);
       if (field) {
         this.clickField(field, true);
       }
@@ -77,9 +75,22 @@
       return false;
     }.bind(this));
 
-    this.clickField = function (field, rightClick) {
-      console.log('clickField');
-      socket.emit('clickField', {field: field, rightClick: rightClick});
+    this.board.canvas.addEventListener('dblclick', function (event) {
+      console.log('doubleClick');
+      var field = this.calculateField(event.offsetX, event.offsetY);
+      if (field) {
+        this.clickField(field, false, true);
+      }
+    }.bind(this));
+
+    this.calculateField = function (offsetX, offsetY) {
+      var x = Math.floor(offsetX / this.board.fieldSize);
+      var y = Math.floor(offsetY / this.board.fieldSize);
+      return this.board.game.fields[x] && this.board.game.fields[x][y];
+    };
+
+    this.clickField = function (field, rightClick, doubleClick) {
+      socket.emit('clickField', {field: field, rightClick: rightClick, doubleClick: doubleClick});
     };
 
     socket.on('PlayerJoined', function (data) {
@@ -174,11 +185,12 @@
     });
   });
 
-  socket.on('field', function (data) {
+  socket.on('fields', function (data) {
     console.log('field');
-
-    board.game.fields[data.field.x][data.field.y] = data.field;
-    board.renderField(data.field);
+    data.fields.forEach(function (field) {
+      board.game.fields[field.x][field.y] = field;
+      board.renderField(field);
+    });
     scoreTable.updatePlayer(data.player);
   });
 }());

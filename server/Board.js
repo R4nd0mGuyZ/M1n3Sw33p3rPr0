@@ -50,7 +50,17 @@ module.exports = function Board () {
     if (field.neighbours !== null) {
       return field.neighbours;
     }
-    var neighbours = 0;
+    var mineCount = 0;
+    this.forEachNeighbour(field, function (neighbour) {
+      if (neighbour.isMine) {
+        mineCount++;
+      }
+    });
+    field.neighbours = mineCount;
+    return mineCount;
+  };
+
+  this.forEachNeighbour = function (field, callback) {
     for (var x = field.x - 1; x <= field.x + 1; x++) {
       for (var y = field.y - 1; y <= field.y + 1; y++) {
         if (x === field.x && y === field.y) {
@@ -59,13 +69,9 @@ module.exports = function Board () {
         if (!this.fields[x] || !this.fields[x][y]) {
           continue;
         }
-        if (this.fields[x][y].isMine) {
-          neighbours++;
-        }
+        callback(this.fields[x][y]);
       }
     }
-    field.neighbours = neighbours;
-    return neighbours;
   };
 
   this.openField = function () {
