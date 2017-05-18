@@ -9,7 +9,7 @@ module.exports = function Player (name, id, socket, game) {
 
   this.socket.on('clickField', function (data) {
     console.log(this.name + ' clickedField');
-    var field = game.action.clickField(data.field, data.rightClick);
+    var field = this.game.clickField(data.field, data.rightClick);
     if (field) {
       if (field.status === field.STATUS_OPEN) {
         if (field.isMine) {

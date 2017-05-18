@@ -28,7 +28,7 @@ module.exports = function PlayerList (game) {
     }.bind(this));
     var player = new Player(name, id, socket, this.game);
     this.players.push(player);
-    socket.emit('game', {game: this.game.getValues(), playerList: this.getValues(), player: player.getValues()});
+    socket.emit('game', {game: this.game.board.getValues(), playerList: this.getValues(), player: player.getValues()});
     this.tellAllPlayers('PlayerJoined', {player: player.getValues()});
   };
 

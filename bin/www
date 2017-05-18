@@ -37,7 +37,6 @@ server.on('listening', onListening);
 
 var Game = require('../server/Game.js');
 var currentGame = new Game();
-currentGame.initialize();
 
 /**
  * Listen to Web Socket
@@ -45,7 +44,7 @@ currentGame.initialize();
 io.on('connection', function (socket) {
   socket.on('join', function () {
     console.log('join');
-    currentGame.action.playerJoin('', socket);
+    currentGame.playerJoin('', socket);
   });
 });
 
