@@ -1,5 +1,12 @@
 extends layout
 
+block scripts
+  script(src= '/socket.io/socket.io.js')
+  script(src= '/javascripts/Board.js')
+  script(src= '/javascripts/Controller.js')
+  script(src= '/javascripts/ScoreTable.js')
+  script(src= '/javascripts/client.js')
+
 block content
   canvas#canvas
   img#bombicon(src='/image/b0mb.svg', style='display:none' )
