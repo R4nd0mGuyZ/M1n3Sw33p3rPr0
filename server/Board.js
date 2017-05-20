@@ -82,11 +82,14 @@ module.exports = function Board () {
     if (!field.open()) {
       return false;
     }
+    var fields = [field];
     if (!field.isMine) {
-      this.calculateNeighbours(field);
       this.openedFields++;
+      if (!this.calculateNeighbours(field)) {
+        fields = fields.concat(this.openFieldNeighbours(field));
+      }
     }
-    return field;
+    return fields;
   };
 
   this.openFieldNeighbours = function (field) {
@@ -102,12 +105,23 @@ module.exports = function Board () {
         fields.push(neighbour);
       }
     });
-    if (flagNum !== this.calculateNeighbours(field)) {
+    if (flagNum !== this.calculateNeighbours(field) && field.neighbours > 0) {
       return false;
     }
-    return fields.map(function (field) {
-      return this.openField(field);
+    var openedFields = [];
+    fields.forEach(function (field2) {
+      var openedFields2 = this.openField(field2);
+      if (openedFields2) {
+        openedFields2.forEach(function (field3) {
+          if (field3 instanceof Array) {
+            openedFields = openedFields.concat(field3);
+          } else {
+            openedFields.push(field3);
+          }
+        });
+      }
     }.bind(this));
+    return openedFields;
   };
 
   this.flagField = function (field) {

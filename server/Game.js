@@ -29,7 +29,7 @@ module.exports = function Game () {
     if (doubleClick) {
       fields = this.board.openFieldNeighbours(field);
     } else {
-      fields = [this.board.openField(field)];
+      fields = this.board.openField(field);
     }
     if (!fields) {
       return;
