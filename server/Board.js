@@ -12,11 +12,15 @@ module.exports = function Board () {
       size: this.size,
       mines: this.mines,
       fields: this.fields.map(function (fields) {
-        return fields.map(function (field) {
-          return field.getValues();
-        });
-      })
+        return this.getFieldsValues(fields);
+      }.bind(this))
     };
+  };
+
+  this.getFieldsValues = function (fields) {
+    return fields.map(function (field) {
+      return field.getValues();
+    });
   };
 
   this.generateFields = function () {
@@ -74,12 +78,44 @@ module.exports = function Board () {
     }
   };
 
-  this.openField = function () {
-    this.openedFields++;
-    if (this.openedFields >= this.size * this.size - this.mines) {
+  this.openField = function (field) {
+    if (!field.open()) {
       return false;
     }
-    return true;
+    if (!field.isMine) {
+      this.calculateNeighbours(field);
+      this.openedFields++;
+    }
+    return field;
+  };
+
+  this.openFieldNeighbours = function (field) {
+    if (!field.isOpen() || field.isFlagged() || field.isClosed() || field.isMine) {
+      return false;
+    }
+    var fields = [];
+    var flagNum = 0;
+    this.forEachNeighbour(field, function (neighbour) {
+      if (neighbour.isFlagged() || neighbour.isOpen() && neighbour.isMine) {
+        flagNum++;
+      } else {
+        fields.push(neighbour);
+      }
+    });
+    if (flagNum !== this.calculateNeighbours(field)) {
+      return false;
+    }
+    return fields.map(function (field) {
+      return this.openField(field);
+    }.bind(this));
+  };
+
+  this.flagField = function (field) {
+    return field.toggleFlag(field);
+  };
+
+  this.isCompleted = function () {
+    return this.openedFields >= this.size * this.size - this.mines;
   };
 
   this.initialize = function () {

@@ -12,6 +12,34 @@ module.exports = function Field () {
 
   this.status = null;
 
+  this.isClosed = function () {
+    return this.status === this.STATUS_CLOSED;
+  };
+
+  this.isFlagged = function () {
+    return this.status === this.STATUS_FLAGGED;
+  };
+
+  this.isOpen = function () {
+    return this.status === this.STATUS_OPEN;
+  };
+
+  this.open = function () {
+    if (this.isClosed()) {
+      this.status = this.STATUS_OPEN;
+      return this;
+    }
+    return false;
+  };
+
+  this.toggleFlag = function () {
+    if (!this.isOpen()) {
+      this.status = (this.isFlagged() ? this.STATUS_CLOSED : this.STATUS_FLAGGED);
+      return this;
+    }
+    return false;
+  };
+
   this.getValues = function () {
     var isMine = (this.status === this.STATUS_OPEN ? this.isMine : null);
     return {

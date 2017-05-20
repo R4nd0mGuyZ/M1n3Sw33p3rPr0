@@ -1,6 +1,6 @@
 'use strict';
-var PlayerList = require('./PlayerList.js'),
-  Board = require('./Board.js');
+var PlayerList = require('./PlayerList.js');
+var Board = require('./Board.js');
 
 module.exports = function Game () {
   this.playerList = new PlayerList(this);
@@ -11,57 +11,53 @@ module.exports = function Game () {
     this.playerList.addPlayer(name, socket);
   };
 
-  this.clickField = function (fieldData, rightClick, doubleClick) {
+  this.clickField = function (player, fieldData, rightClick, doubleClick) {
     var field = this.board.fields[fieldData.x] && this.board.fields[fieldData.x][fieldData.y];
-
     if (!field) {
-      return false;
+      return;
     }
-    if (field.status === field.STATUS_CLOSED) {
-      if (rightClick) {
-        return [this.flagField(field)];
-      } else {
-        return [this.openField(field)];
+
+    if (rightClick) {
+      if (this.board.flagField(field)) {
+        console.log('toggled field flag');
+        this.playerList.tellAllPlayers('fields', {fields: [field.getValues()], player: player.getValues()});
       }
-    } else if (field.status === field.STATUS_FLAGGED) {
-      if (rightClick) {
-        return [this.flagField(field)];
-      }
-    } else if (doubleClick && field.status === field.STATUS_OPEN) {
-      var fields = [];
-      var flagNum = 0;
-      this.board.forEachNeighbour(field, function (neighbour) {
-        if (neighbour.status === neighbour.STATUS_FLAGGED || neighbour.status === neighbour.STATUS_OPEN && neighbour.isMine) {
-          flagNum++;
-        } else if (neighbour.status === neighbour.STATUS_CLOSED) {
-          fields.push(neighbour);
+      return;
+    }
+
+    var fields;
+    if (doubleClick) {
+      fields = this.board.openFieldNeighbours(field);
+    } else {
+      fields = [this.board.openField(field)];
+    }
+    if (!fields) {
+      return;
+    }
+    fields = fields.filter(function (field) {
+      if (field) {
+        if (field.isMine) {
+          player.addWackness();
+        } else {
+          player.addFame();
         }
-      });
-      if (flagNum === this.board.calculateNeighbours(field)) {
-        fields.forEach(function (field) {
-          this.openField(field);
-        }.bind(this));
-        return fields;
+        return true;
       }
-    }
-    return false;
+    });
+
+    console.log(player.name + ' has now ' + player.fame + ' fame and ' + player.wackness + ' wackness.');
+    this.playerList.tellAllPlayers('fields', {fields: this.board.getFieldsValues(fields), player: player.getValues()});
+
+    this.checkGameOver();
   };
 
-  this.openField = function (field) {
-    if (!field.isMine) {
-      this.board.calculateNeighbours(field);
-      if (!this.board.openField()) {
+  this.checkGameOver = function () {
+    if (this.board.isCompleted()) {
+      console.log('Game Over!');
+      setTimeout(function () {
         this.board.initialize();
         this.playerList.tellAllPlayers('nextGame', {game: this.board.getValues(), playerList: this.playerList.getValues()});
-        return false;
-      }
+      }.bind(this), 1000);
     }
-    field.status = field.STATUS_OPEN;
-    return field;
-  };
-
-  this.flagField = function (field) {
-    field.status = (field.status === field.STATUS_FLAGGED ? field.STATUS_CLOSED : field.STATUS_FLAGGED);
-    return field;
   };
 };
