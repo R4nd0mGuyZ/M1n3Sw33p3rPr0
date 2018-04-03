@@ -2,3 +2,4 @@
 - Time penalty for players that open mines
 - Let players take turns (possibly a time-interval) instead of free-for-all
 - Let players choose their name before joining the game
+- Some more magic
