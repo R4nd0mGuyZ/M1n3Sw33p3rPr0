@@ -6,7 +6,8 @@
 
   var socket = window.io('/');
 
-  socket.emit('join');
+
+  socket.emit('join', prompt("Please enter your name:", ""));
 
   socket.on('game', function (data) {
     console.log('game');

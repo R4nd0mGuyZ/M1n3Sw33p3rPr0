@@ -42,9 +42,9 @@ var currentGame = new Game();
  * Listen to Web Socket
  */
 io.on('connection', function (socket) {
-  socket.on('join', function () {
-    console.log('join');
-    currentGame.playerJoin('', socket);
+  socket.on('join', function (name) {
+    console.log(name);
+    currentGame.playerJoin(name, socket);
   });
 });
 
